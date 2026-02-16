@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Client Check-In</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .section-title {
+            color: #333;
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1em;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="number"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .weight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .weight-day {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .weight-day label {
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .weight-day input {
+            width: 100%;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .rating-scale {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .rating-option {
+            flex: 1;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .rating-option input[type="radio"] {
+            display: none;
+        }
+
+        .rating-option label {
+            display: block;
+            padding: 12px;
+            background: #e9ecef;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .rating-option input[type="radio"]:checked + label {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .rating-option label:hover {
+            background: #dee2e6;
+            border-color: #adb5bd;
+        }
+
+        .rating-option input[type="radio"]:checked + label:hover {
+            background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
+        }
+
+        .scale-legend {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .checkbox-group {
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: #764ba2;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .file-upload {
+            margin-top: 10px;
+        }
+
+        .file-upload input[type="file"] {
+            padding: 10px;
+            border: 2px dashed #ddd;
+            border-radius: 5px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .file-upload input[type="file"]:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+
+        .yes-no-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .yes-no-option {
+            flex: 1;
+        }
+
+        .yes-no-option input[type="radio"] {
+            display: none;
+        }
+
+        .yes-no-option label {
+            display: block;
+            padding: 15px;
+            background: #e9ecef;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .yes-no-option input[type="radio"]:checked + label {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .yes-no-option label:hover {
+            background: #dee2e6;
+            border-color: #adb5bd;
+        }
+
+        .yes-no-option input[type="radio"]:checked + label:hover {
+            background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .reset-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        .reset-btn:hover {
+            background: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #2196F3;
+        }
+
+        .info-box p {
+            color: #1565C0;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .current-date {
+            text-align: center;
+            color: #666;
+            font-size: 0.95em;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .weight-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .rating-scale {
+                flex-direction: column;
+            }
+
+            .rating-option {
+                min-width: 100%;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Weekly Client Check-In</h1>
+        <p class="subtitle">Track your progress and stay accountable</p>
+        <p class="current-date" id="currentDate"></p>
+
+        <div class="info-box">
+            <p><strong>Instructions:</strong> Please complete this form at the end of each week to track your progress. Be honest and detailed in your responses - this helps us optimize your program!</p>
+        </div>
+
+        <form action="https://formspree.io/f/mojnwqwd" method="POST" enctype="multipart/form-data">
+            <!-- Hidden field to capture submission date automatically -->
+            <input type="hidden" name="_subject" value="New Weekly Check-In Submission">
+            <input type="hidden" name="submission_date" id="submissionDate">
+
+            <!-- Client Information -->
+            <div class="section">
+                <h2 class="section-title">Client Information</h2>
+                
+                <div class="form-group">
+                    <label for="clientName">Your Name: *</label>
+                    <input type="text" id="clientName" name="client_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="clientEmail">Email Address: *</label>
+                    <input type="email" id="clientEmail" name="client_email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="weekRange">Week Of (e.g., "Jan 1-7" or "Week 3"): *</label>
+                    <input type="text" id="weekRange" name="week_range" placeholder="Example: Jan 15-21, 2024" required>
+                </div>
+            </div>
+
+            <!-- Daily Weights -->
+            <div class="section">
+                <h2 class="section-title">Daily Fasted Morning Weights</h2>
+                <p style="color: #666; margin-bottom: 15px; font-size: 0.95em;">Record your weight each morning before eating (in lbs or kg)</p>
+                
+                <div class="weight-grid">
+                    <div class="weight-day">
+                        <label for="weightMon">Monday</label>
+                        <input type="number" id="weightMon" name="weight_monday" step="0.1" placeholder="0.0">
+                    </div>
+                    <div class="weight-day">
+                        <label for="weightTue">Tuesday</label>
+                        <input type="number" id="weightTue" name="weight_tuesday" step="0.1" placeholder="0.0">
+                    </div>
+                    <div class="weight-day">
+                        <label for="weightWed">Wednesday</label>
+                        <input type="number" id="weightWed" name="weight_wednesday" step="0.1" placeholder="0.0">
+                    </div>
+                    <div class="weight-day">
+                        <label for="weightThu">Thursday</label>
+                        <input type="number" id="weightThu" name="weight_thursday" step="0.1" placeholder="0.0">
+                    </div>
+                    <div class="weight-day">
+                        <label for="weightFri">Friday</label>
+                        <input type="number" id="weightFri" name="weight_friday" step="0.1" placeholder="0.0">
+                    </div>
+                    <div class="weight-day">
+                        <label for="weightSat">Saturday</label>
+                        <input type="number" id="weightSat" name="weight_saturday" step="0.1" placeholder="0.0">
+                    </div>
+                    <div class="weight-day">
+                        <label for="weightSun">Sunday</label>
+                        <input type="number" id="weightSun" name="weight_sunday" step="0.1" placeholder="0.0">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="weightNotes">Weight Notes (optional):</label>
+                    <textarea id="weightNotes" name="weight_notes" placeholder="Any observations about your weight this week? (e.g., bloating, water retention, etc.)"></textarea>
+                </div>
+            </div>
+
+            <!-- Energy Levels -->
+            <div class="section">
+                <h2 class="section-title">Average Energy Levels This Week</h2>
+                <p class="scale-legend">1 = Very Low Energy | 5 = Excellent Energy</p>
+                
+                <div class="rating-scale">
+                    <div class="rating-option">
+                        <input type="radio" id="energy1" name="energy_level" value="1" required>
+                        <label for="energy1">1</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="energy2" name="energy_level" value="2">
+                        <label for="energy2">2</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="energy3" name="energy_level" value="3">
+                        <label for="energy3">3</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="energy4" name="energy_level" value="4">
+                        <label for="energy4">4</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="energy5" name="energy_level" value="5">
+                        <label for="energy5">5</label>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="energyNotes">Energy Notes (optional):</label>
+                    <textarea id="energyNotes" name="energy_notes" placeholder="Any factors affecting your energy? (sleep, stress, nutrition, etc.)"></textarea>
+                </div>
+            </div>
+
+            <!-- Sleep Quality -->
+            <div class="section">
+                <h2 class="section-title">Average Sleep Quality This Week</h2>
+                <p class="scale-legend">1 = Very Poor Sleep | 5 = Excellent Sleep</p>
+                
+                <div class="rating-scale">
+                    <div class="rating-option">
+                        <input type="radio" id="sleep1" name="sleep_quality" value="1" required>
+                        <label for="sleep1">1</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="sleep2" name="sleep_quality" value="2">
+                        <label for="sleep2">2</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="sleep3" name="sleep_quality" value="3">
+                        <label for="sleep3">3</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="sleep4" name="sleep_quality" value="4">
+                        <label for="sleep4">4</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="sleep5" name="sleep_quality" value="5">
+                        <label for="sleep5">5</label>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="sleepNotes">Sleep Notes (optional):</label>
+                    <textarea id="sleepNotes" name="sleep_notes" placeholder="Average hours per night? Any issues with falling asleep or staying asleep?"></textarea>
+                </div>
+            </div>
+
+            <!-- Workout Completion -->
+            <div class="section">
+                <h2 class="section-title">Workout Completion</h2>
+                
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="workoutComplete" name="all_workouts_completed" value="yes">
+                        <label for="workoutComplete">I completed ALL scheduled workouts this week</label>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="workoutNotes">Workout Notes:</label>
+                    <textarea id="workoutNotes" name="workout_notes" placeholder="If you missed any workouts, explain why. Otherwise, share any workout highlights or achievements!"></textarea>
+                </div>
+            </div>
+
+            <!-- Daily Steps -->
+            <div class="section">
+                <h2 class="section-title">Daily Steps Completion</h2>
+                
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="stepsComplete" name="daily_steps_completed" value="yes">
+                        <label for="stepsComplete">I completed my set daily steps every day this week</label>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="stepsNotes">Daily Steps Notes:</label>
+                    <textarea id="stepsNotes" name="steps_notes" placeholder="If you didn't complete your daily steps, what was your weekly average?"></textarea>
+                </div>
+            </div>
+
+            <!-- Cardio Completion -->
+            <div class="section">
+                <h2 class="section-title">Cardio Completion</h2>
+                
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="cardioComplete" name="cardio_completed" value="yes">
+                        <label for="cardioComplete">I completed my set cardio for the week</label>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="cardioNotes">Cardio Notes:</label>
+                    <textarea id="cardioNotes" name="cardio_notes" placeholder="If you didn't complete your cardio, explain why. Otherwise, share any cardio highlights!"></textarea>
+                </div>
+            </div>
+
+            <!-- Hunger Levels -->
+            <div class="section">
+                <h2 class="section-title">Average Hunger Levels This Week</h2>
+                <p class="scale-legend">1 = Not Hungry At All | 5 = Very Hungry/Strong Cravings</p>
+                
+                <div class="rating-scale">
+                    <div class="rating-option">
+                        <input type="radio" id="hunger1" name="hunger_level" value="1" required>
+                        <label for="hunger1">1</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="hunger2" name="hunger_level" value="2">
+                        <label for="hunger2">2</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="hunger3" name="hunger_level" value="3">
+                        <label for="hunger3">3</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="hunger4" name="hunger_level" value="4">
+                        <label for="hunger4">4</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="hunger5" name="hunger_level" value="5">
+                        <label for="hunger5">5</label>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="hungerNotes">Hunger Notes (optional):</label>
+                    <textarea id="hungerNotes" name="hunger_notes" placeholder="Any specific cravings or patterns? What times of day are hardest?"></textarea>
+                </div>
+            </div>
+
+            <!-- Mood/Mental State -->
+            <div class="section">
+                <h2 class="section-title">Average Mood & Mental State This Week</h2>
+                <p class="scale-legend">1 = Very Poor (stressed, anxious, down) | 5 = Excellent (positive, motivated, happy)</p>
+                
+                <div class="rating-scale">
+                    <div class="rating-option">
+                        <input type="radio" id="mood1" name="mood_mental_state" value="1" required>
+                        <label for="mood1">1</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="mood2" name="mood_mental_state" value="2">
+                        <label for="mood2">2</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="mood3" name="mood_mental_state" value="3">
+                        <label for="mood3">3</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="mood4" name="mood_mental_state" value="4">
+                        <label for="mood4">4</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="mood5" name="mood_mental_state" value="5">
+                        <label for="mood5">5</label>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="moodNotes">Mood Notes (optional):</label>
+                    <textarea id="moodNotes" name="mood_notes" placeholder="What affected your mood this week? Stress, work, relationships, etc."></textarea>
+                </div>
+            </div>
+
+            <!-- Meal Plan Adherence -->
+            <div class="section">
+                <h2 class="section-title">Meal Plan Adherence</h2>
+                <label>Did you follow your meal plan this week?</label>
+                
+                <div class="yes-no-group">
+                    <div class="yes-no-option">
+                        <input type="radio" id="adherenceYes" name="meal_plan_adherence" value="yes" required>
+                        <label for="adherenceYes">✓ YES</label>
+                    </div>
+                    <div class="yes-no-option">
+                        <input type="radio" id="adherenceNo" name="meal_plan_adherence" value="no">
+                        <label for="adherenceNo">✗ NO</label>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="adherenceNotes">Meal Plan Notes:</label>
+                    <textarea id="adherenceNotes" name="meal_plan_notes" placeholder="If you didn't follow the plan, what happened? If you did follow it, how did you feel? Any favorite meals?"></textarea>
+                </div>
+            </div>
+
+            <!-- Challenges - Gym -->
+            <div class="section">
+                <h2 class="section-title">Gym Challenges This Week</h2>
+                <div class="form-group">
+                    <label for="gymChallenges">What challenges did you face in the gym this week?</label>
+                    <textarea id="gymChallenges" name="gym_challenges" placeholder="Examples: injuries, lack of motivation, specific exercises that were difficult, equipment issues, time constraints, etc." rows="4"></textarea>
+                </div>
+            </div>
+
+            <!-- Challenges - Daily Life -->
+            <div class="section">
+                <h2 class="section-title">Daily Life Challenges This Week</h2>
+                <div class="form-group">
+                    <label for="lifeChallenges">What challenges did you face in daily life this week?</label>
+                    <textarea id="lifeChallenges" name="life_challenges" placeholder="Examples: work stress, family commitments, social events, travel, illness, etc." rows="4"></textarea>
+                </div>
+            </div>
+
+            <!-- Goals for Next Week -->
+            <div class="section">
+                <h2 class="section-title">Goals for Next Week</h2>
+                <div class="form-group">
+                    <label for="nextWeekGoals">What are your top 2-3 goals for next week?</label>
+                    <textarea id="nextWeekGoals" name="goals_next_week" placeholder="Be specific! Examples: Hit all 4 workouts, drink 3L water daily, meal prep on Sunday, increase squat by 5lbs, etc." rows="4"></textarea>
+                </div>
+            </div>
+
+            <!-- Progress Photos -->
+            <div class="section">
+                <h2 class="section-title">Progress Photos *</h2>
+                <p style="color: #666; margin-bottom: 15px; font-size: 0.95em;">Upload weekly progress photos as discussed.</p>
+                
+                <div class="file-upload">
+                    <label for="progressPhotos">Choose Photos: *</label>
+                    <input type="file" id="progressPhotos" name="progress_photos" accept="image/*" multiple required>
+                    <p style="color: #999; font-size: 0.85em; margin-top: 8px;">Tip: Take photos in the same location each week with the same lighting.</p>
+                </div>
+            </div>
+
+            <!-- Additional Notes -->
+            <div class="section">
+                <h2 class="section-title">Additional Notes</h2>
+                <div class="form-group">
+                    <label for="additionalNotes">Anything else you want to share this week?</label>
+                    <textarea id="additionalNotes" name="additional_notes" placeholder="Wins, concerns, questions, observations, or anything else on your mind..." rows="5"></textarea>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="button-group">
+                <button type="submit" class="submit-btn">Submit Check-In</button>
+                <button type="reset" class="reset-btn">Clear Form</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Set current date display
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const today = new Date();
+        document.getElementById('currentDate').textContent = 'Submitted: ' + today.toLocaleDateString('en-US', options);
+        
+        // Set hidden submission date field
+        document.getElementById('submissionDate').value = today.toISOString();
+    </script>
+</body>
+</html>
